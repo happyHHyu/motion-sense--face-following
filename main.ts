@@ -27,14 +27,10 @@ function face_following_mode () {
         if (xcenter > 240) {
             turn_right()
         }
-    } else if (CUHK_JC_iCar.Ultrasonic_Car() < 5) {
-        CUHK_JC_iCar.carStop()
-    } else {
-        CUHK_JC_iCar.carStop()
     }
 }
 ml.onStart(ml.event.Nothing, function () {
-	
+    radio.sendNumber(3)
 })
 input.onButtonPressed(Button.A, function () {
     radio.sendValue("message", 1)
@@ -67,7 +63,7 @@ radio.onReceivedValue(function (name, value) {
     }
 })
 ml.onStart(ml.event.Unknown, function () {
-	
+    radio.sendNumber(3)
 })
 function move_forward () {
     CUHK_JC_iCar.carCtrlSpeed(CUHK_JC_iCar.CarState.Forward, 30)
@@ -93,5 +89,9 @@ huskylens.initI2c()
 huskylens.initMode(protocolAlgorithm.ALGORITHM_FACE_RECOGNITION)
 basic.showIcon(IconNames.Yes)
 basic.forever(function () {
-    face_following_mode()
+    if (CUHK_JC_iCar.Ultrasonic_Car() < 5) {
+        CUHK_JC_iCar.carStop()
+    } else {
+        face_following_mode()
+    }
 })
