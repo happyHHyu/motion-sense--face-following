@@ -16,7 +16,6 @@ radio.onReceivedNumber(function (receivedNumber) {
 function face_following_mode () {
     huskylens.request()
     if (huskylens.isAppear(1, HUSKYLENSResultType_t.HUSKYLENSResultBlock)) {
-        CUHK_JC_iCar.headLightsOff()
         xcenter = huskylens.readeBox(1, Content1.xCenter)
         if (xcenter < 80) {
             turn_left()
@@ -27,6 +26,9 @@ function face_following_mode () {
         if (xcenter > 240) {
             turn_right()
         }
+    } else {
+        CUHK_JC_iCar.carStop()
+        CUHK_JC_iCar.headLightsOff()
     }
 }
 ml.onStart(ml.event.Nothing, function () {
@@ -40,12 +42,15 @@ ml.onStart(ml.event.Tick, function () {
     basic.showIcon(IconNames.Yes)
 })
 function turn_left () {
+    music.play(music.stringPlayable("B B B B B B B B ", 120), music.PlaybackMode.LoopingInBackground)
     CUHK_JC_iCar.carCtrlSpeed(CUHK_JC_iCar.CarState.TurnLeft, 30)
+    CUHK_JC_iCar.setHeadColor(0xffff00)
+    basic.pause(500)
     CUHK_JC_iCar.setHeadColor(0xff0000)
     basic.pause(500)
     CUHK_JC_iCar.setHeadColor(0x007fff)
     basic.pause(500)
-    CUHK_JC_iCar.setHeadColor(0xffff00)
+    music.stopAllSounds()
 }
 input.onButtonPressed(Button.AB, function () {
     radio.sendValue("message", 3)
@@ -70,14 +75,18 @@ function move_forward () {
     CUHK_JC_iCar.setHeadColor(0xff0000)
     basic.pause(500)
     CUHK_JC_iCar.setHeadColor(0x007fff)
+    basic.pause(500)
 }
 function turn_right () {
+    music.play(music.stringPlayable("B B B B B B B B ", 120), music.PlaybackMode.LoopingInBackground)
     CUHK_JC_iCar.carCtrlSpeed(CUHK_JC_iCar.CarState.TurnRight, 30)
+    CUHK_JC_iCar.setHeadColor(0xffff00)
+    basic.pause(500)
     CUHK_JC_iCar.setHeadColor(0xff0000)
     basic.pause(500)
     CUHK_JC_iCar.setHeadColor(0x007fff)
     basic.pause(500)
-    CUHK_JC_iCar.setHeadColor(0xffff00)
+    music.stopAllSounds()
 }
 ml.onStart(ml.event.No, function () {
     radio.sendNumber(0)
@@ -87,6 +96,7 @@ let xcenter = 0
 radio.setGroup(131)
 huskylens.initI2c()
 huskylens.initMode(protocolAlgorithm.ALGORITHM_FACE_RECOGNITION)
+CUHK_JC_iCar.headLightsOff()
 basic.showIcon(IconNames.Yes)
 basic.forever(function () {
     if (CUHK_JC_iCar.Ultrasonic_Car() < 5) {
